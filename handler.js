@@ -1,8 +1,9 @@
 const { nanoid } = require('nanoid')
 const booksData = require('./booksData')
 
+// Add New Book
 const addBookHandler = (request, h) => {
-  const {
+  const { // inisialisasi variable dan mengambil data dari JSON
     name,
     year,
     author,
@@ -13,13 +14,14 @@ const addBookHandler = (request, h) => {
     reading
   } = request.payload
 
+  // metadata generator
   const id = nanoid(16)
   const insertedAt = new Date().toISOString()
-  let finished = false
-  if (readPage === pageCount) { finished = true } else { finished = false }
+  const finished = pageCount === readPage
   const updatedAt = insertedAt
 
   if (!name) {
+    // response ketika nama kosong
     const response = h.response({
       status: 'fail',
       message: 'Gagal menambahkan buku. Mohon isi nama buku'
@@ -27,6 +29,7 @@ const addBookHandler = (request, h) => {
     response.code(400)
     return response
   } else if (readPage > pageCount) {
+    // response jika reading page > pagecount
     const response = h.response({
       status: 'fail',
       message: 'Gagal menambahkan buku. readPage tidak boleh lebih besar dari pageCount'
@@ -34,6 +37,7 @@ const addBookHandler = (request, h) => {
     response.code(400)
     return response
   } else {
+    // menambahkan new data book ketika semua kriteria terpenuhi
     const newBookdata = {
       id,
       name,
@@ -52,6 +56,7 @@ const addBookHandler = (request, h) => {
 
     const isSuccess = booksData.filter((Databooks) => Databooks.id).length > 0
     if (isSuccess) {
+      // response ketika data book berhasil ditambahkan
       const response = h.response({
         status: 'success',
         message: 'Buku berhasil ditambahkan',
@@ -65,17 +70,20 @@ const addBookHandler = (request, h) => {
   }
 
   const response = h.response({
+    // response generic error
     status: 'error',
     message: 'Buku gagal ditambahkan'
   })
   response.code(500)
   return response
 }
-// get all data
-const getAllBookhandler = (request, h) => {
+// get all Books data
+const getAllBookHandler = (request, h) => {
+  // mengambil query
   const { name, reading, finished } = request.query
 
   if (!name && !reading && !finished) {
+    // mengambil semua data books dari bookdata
     const response = h.response({
       status: 'success',
       data: {
@@ -91,7 +99,7 @@ const getAllBookhandler = (request, h) => {
   }
 
   if (name) {
-    // filter query name
+    // [optional] filter query apakah sama dengan books name
     const filterBookname = booksData.filter((nameBook) => {
       const bookRegex = new RegExp(name, 'gi')
       return bookRegex.test(nameBook.name)
@@ -109,6 +117,7 @@ const getAllBookhandler = (request, h) => {
     response.code(200)
     return response
   } else if (reading) {
+    // [optional] filter buka telah dibaca atau belum
     const response = h.response({
       status: 'success',
       data: {
@@ -122,8 +131,8 @@ const getAllBookhandler = (request, h) => {
     response.code(200)
     return response
   } else if (finished) {
+    // [optional] filter buku telah selesai dibaca ataupun belum
     const response = h.response({
-      // optional finished
       status: 'success',
       data: {
         books: booksData.filter((finishedBooks) => Number(finishedBooks.finished) === Number(finished)).map((finishedBooks) => ({
@@ -138,13 +147,15 @@ const getAllBookhandler = (request, h) => {
   }
 }
 
-// get data by id
+// get Book data selected by id
 const getBookbyIdHandler = (request, h) => {
+  // mengambil data id dan maindata
   const { id } = request.params
 
   const book = booksData.filter((dataBooks) => dataBooks.id === id)[0]
 
-  if (book !== undefined) {
+  if (book) {
+    // response menampilkan seluruh data saat variable book tidak kosong
     return {
       status: 'success',
       data: {
@@ -153,6 +164,7 @@ const getBookbyIdHandler = (request, h) => {
     }
   } else {
     const response = h.response({
+      // response generic error
       status: 'fail',
       message: 'Buku tidak ditemukan'
     })
@@ -161,10 +173,10 @@ const getBookbyIdHandler = (request, h) => {
   }
 }
 
-// update the Books
+// update the selected Book data
 const updateBookByIdHandler = (request, h) => {
-  const { id } = request.params
-  const {
+  const { id } = request.params// mengambil nilai ID dari URL
+  const { // mengambil new data dari JSON
     name,
     year,
     author,
@@ -175,11 +187,12 @@ const updateBookByIdHandler = (request, h) => {
     reading
   } = request.payload
 
-  let finished = false
-  if (readPage === pageCount) { finished = true } else { finished = false }
+  // metadata update generator
+  const finished = pageCount === readPage
   const updatedAt = new Date().toISOString()
 
   if (!name) {
+    // response ketika nama kosong
     const response = h.response({
       status: 'fail',
       message: 'Gagal memperbarui buku. Mohon isi nama buku'
@@ -187,6 +200,7 @@ const updateBookByIdHandler = (request, h) => {
     response.code(400)
     return response
   } else if (readPage > pageCount) {
+    // response ketika readpage > pageCount
     const response = h.response({
       status: 'fail',
       message: 'Gagal memperbarui buku. readPage tidak boleh lebih besar dari pageCount'
@@ -194,6 +208,7 @@ const updateBookByIdHandler = (request, h) => {
     response.code(400)
     return response
   } else {
+    // update data ketika semua kriteria terpenuhi
     const indexBooks = booksData.findIndex((dataBooks) => dataBooks.id === id)
 
     if (indexBooks !== -1) {
@@ -218,8 +233,8 @@ const updateBookByIdHandler = (request, h) => {
       return response
     }
   }
-  // generic Error response
   const response = h.response({
+    // response generic error
     status: 'fail',
     message: 'Gagal memperbarui buku. Id tidak ditemukan'
   })
@@ -227,13 +242,15 @@ const updateBookByIdHandler = (request, h) => {
   return response
 }
 
-// delete the books
+// delete the selected book
 const deleteBookbyIdHandler = (request, h) => {
+  // mengambil data id dan metadata
   const { id } = request.params
 
   const indexBooks = booksData.findIndex((bookshelf) => bookshelf.id === id)
 
   if (indexBooks !== -1) {
+    // response ketika buku sudah dihapus
     booksData.splice(indexBooks, 1)
     const response = h.response({
       status: 'success',
@@ -244,6 +261,7 @@ const deleteBookbyIdHandler = (request, h) => {
   }
 
   const response = h.response({
+    // response generic error
     status: 'fail',
     message: 'Buku gagal dihapus. Id tidak ditemukan'
   })
@@ -251,9 +269,10 @@ const deleteBookbyIdHandler = (request, h) => {
   return response
 }
 
+// export semua module
 module.exports = {
   addBookHandler,
-  getAllBookhandler,
+  getAllBookHandler,
   getBookbyIdHandler,
   updateBookByIdHandler,
   deleteBookbyIdHandler

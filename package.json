@@ -1,7 +1,7 @@
 {
   "name": "submission-bookshelf-api",
   "version": "1.0.0",
-  "description": "",
+  "description": "ini merupakan submission Dicoding Back-End Web untuk Pemula, Style Guide eslint yang digunakan untuk project ini Standar Style Guide",
   "main": "index.js",
   "scripts": {
     "start": "nodemon server.js"

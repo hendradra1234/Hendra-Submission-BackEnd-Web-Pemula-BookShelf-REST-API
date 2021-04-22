@@ -1,6 +1,6 @@
 const {
   addBookHandler,
-  getAllBookhandler,
+  getAllBookHandler,
   getBookbyIdHandler,
   updateBookByIdHandler,
   deleteBookbyIdHandler
@@ -13,32 +13,32 @@ const routes = [
     path: '/books',
     handler: addBookHandler
   },
-  // view a book
+  // view a whole books
   {
     method: 'GET',
     path: '/books',
-    handler: getAllBookhandler
+    handler: getAllBookHandler
   },
-  // view book by id
+  // view book selected by id
   {
     method: 'GET',
     path: '/books/{id}',
     handler: getBookbyIdHandler
   },
-  // update book
+  // update book selected by id
   {
     method: 'PUT',
     path: '/books/{id}',
     handler: updateBookByIdHandler
   },
-  // delete book
+  // delete book selected by id
   {
     method: 'DELETE',
     path: '/books/{id}',
     handler: deleteBookbyIdHandler
   }
-  // Get Query books by name
 
 ]
 
+// export routes module
 module.exports = routes
