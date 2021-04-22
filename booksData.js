@@ -1,4 +1,5 @@
-const bookshelf = [{
+/*
+Data Type
   id: String,
   name: String,
   year: Int32Array,
@@ -11,6 +12,7 @@ const bookshelf = [{
   reading: Boolean,
   insertedAt: String,
   updatedAt: String
-}]
+*/
+const booksdata = []
 
-module.exports = bookshelf
+module.exports = booksdata

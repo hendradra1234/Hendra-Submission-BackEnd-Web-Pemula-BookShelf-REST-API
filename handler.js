@@ -1,5 +1,5 @@
 const { nanoid } = require('nanoid')
-const bookshelf = require('./bookshelf')
+const booksData = require('./booksData')
 
 const addBookHandler = (request, h) => {
   const {
@@ -48,9 +48,9 @@ const addBookHandler = (request, h) => {
       insertedAt,
       updatedAt
     }
-    bookshelf.push(newBookdata)
+    booksData.push(newBookdata)
 
-    const isSuccess = bookshelf.filter((bookshelf) => bookshelf.id).length > 0
+    const isSuccess = booksData.filter((bookshelf) => bookshelf.id).length > 0
     if (isSuccess) {
       const response = h.response({
         status: 'success',
@@ -79,7 +79,7 @@ const getAllBookhandler = (request, h) => {
     const response = h.response({
       status: 'success',
       data: {
-        books: bookshelf.map((book) => ({
+        books: booksData.map((book) => ({
           id: book.id,
           name: book.name,
           publisher: book.publisher
@@ -105,7 +105,7 @@ const getAllBookhandler = (request, h) => {
 const getBookbyIdHandler = (request, h) => {
   const { id } = request.params
 
-  const book = bookshelf.filter((dataBooks) => dataBooks.id === id)[0]
+  const book = booksData.filter((dataBooks) => dataBooks.id === id)[0]
 
   if (book !== undefined) {
     return {
@@ -157,11 +157,11 @@ const updateBookByIdHandler = (request, h) => {
     response.code(400)
     return response
   } else {
-    const indexBooks = bookshelf.findIndex((dataBooks) => dataBooks.id === id)
+    const indexBooks = booksData.findIndex((dataBooks) => dataBooks.id === id)
 
     if (indexBooks !== -1) {
-      bookshelf[indexBooks] = {
-        ...bookshelf[indexBooks],
+      booksData[indexBooks] = {
+        ...booksData[indexBooks],
         name,
         year,
         author,
@@ -194,10 +194,10 @@ const updateBookByIdHandler = (request, h) => {
 const deleteBookbyIdHandler = (request, h) => {
   const { id } = request.params
 
-  const indexBooks = bookshelf.findIndex((bookshelf) => bookshelf.id === id)
+  const indexBooks = booksData.findIndex((bookshelf) => bookshelf.id === id)
 
   if (indexBooks !== -1) {
-    bookshelf.splice(indexBooks, 1)
+    booksData.splice(indexBooks, 1)
     const response = h.response({
       status: 'success',
       message: 'Buku berhasil dihapus'
