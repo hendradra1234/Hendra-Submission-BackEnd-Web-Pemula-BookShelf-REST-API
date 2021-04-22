@@ -83,6 +83,24 @@ const getAllBookhandler = (request, h) => {
           id: dataBooks.id,
           name: dataBooks.name,
           publisher: dataBooks.publisher
+        })),
+        // optional name
+        name: booksData.filter((dataBooks) => dataBooks.name).map((dataBooks) => ({
+          id: dataBooks.id,
+          name: dataBooks.name,
+          publisher: dataBooks.publisher
+        })),
+        // optional reading
+        reading: booksData.filter((dataBooks) => dataBooks.reading === true).map((dataBooks) => ({
+          id: dataBooks.id,
+          name: dataBooks.name,
+          publisher: dataBooks.publisher
+        })),
+        // optional finished
+        finished: booksData.filter((dataBooks) => dataBooks.finished === true).map((dataBooks) => ({
+          id: dataBooks.id,
+          name: dataBooks.name,
+          publisher: dataBooks.publisher
         }))
 
       }
