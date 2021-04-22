@@ -6,7 +6,7 @@ const Usagememory = process.memoryUsage()
 console.log('Resource Used')
 console.log(`User CPU Usage : ${Usagecpu.user} Hz `)
 console.log(`System CPU Usage : ${Usagecpu.system} Hz`)
-console.log(`Memory Heap Total : ${Usagememory.heapTotal} kb`)
+console.log(`Memory Heap Total : ${Usagememory.heapTotal} kb\n`)
 
 const init = async () => {
   const server = hapi.server({
@@ -21,6 +21,7 @@ const init = async () => {
 
   server.route(routes)
   await server.start()
+
   console.log(`Server Aready Running in... ${server.info.uri}`)
 }
 

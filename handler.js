@@ -50,7 +50,7 @@ const addBookHandler = (request, h) => {
     }
     booksData.push(newBookdata)
 
-    const isSuccess = booksData.filter((bookshelf) => bookshelf.id).length > 0
+    const isSuccess = booksData.filter((Databooks) => Databooks.id).length > 0
     if (isSuccess) {
       const response = h.response({
         status: 'success',
@@ -73,16 +73,16 @@ const addBookHandler = (request, h) => {
 }
 // get all data
 const getAllBookhandler = (request, h) => {
-  const { id } = request.query
+  const { id, name } = request.query
 
-  if (id !== null) {
+  if (id !== null && name !== null) {
     const response = h.response({
       status: 'success',
       data: {
-        books: booksData.map((book) => ({
-          id: book.id,
-          name: book.name,
-          publisher: book.publisher
+        books: booksData.map((dataBooks) => ({
+          id: dataBooks.id,
+          name: dataBooks.name,
+          publisher: dataBooks.publisher
         }))
 
       }
