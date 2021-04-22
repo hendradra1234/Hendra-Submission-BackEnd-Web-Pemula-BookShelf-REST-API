@@ -19,7 +19,7 @@ const addBookHandler = (request, h) => {
   if (readPage === pageCount) { finished = true } else { finished = false }
   const updatedAt = insertedAt
 
-  if (name === undefined) {
+  if (!name) {
     const response = h.response({
       status: 'fail',
       message: 'Gagal menambahkan buku. Mohon isi nama buku'
@@ -75,7 +75,7 @@ const addBookHandler = (request, h) => {
 const getAllBookhandler = (request, h) => {
   const { name, reading, finished } = request.query
 
-  if (name !== null && reading !== null && finished !== null) {
+  if (!name && !reading && !finished) {
     const response = h.response({
       status: 'success',
       data: {
@@ -92,14 +92,15 @@ const getAllBookhandler = (request, h) => {
 
   if (name) {
     // filter query name
+    const filterBookname = booksData.filter((nameBook) => {
+      const bookRegex = new RegExp(name, 'gi')
+      return bookRegex.test(nameBook.name)
+    })
     const response = h.response({
       status: 'success',
       data: {
-        books: booksData.filter((nameBook) => {
-          const bookRegex = new RegExp(name, 'gi')
-          return bookRegex.test(nameBook.name)
-        }).map((nameBook) => ({
-
+        books: filterBookname.map((nameBook) => ({
+          id: nameBook.id,
           name: nameBook.name,
           publisher: nameBook.publisher
         }))
@@ -107,13 +108,12 @@ const getAllBookhandler = (request, h) => {
     })
     response.code(200)
     return response
-  }
-  if (reading) {
+  } else if (reading) {
     const response = h.response({
       status: 'success',
       data: {
         books: booksData.filter((readingBooks) => Number(readingBooks.reading) === Number(reading)).map((readingBooks) => ({
-
+          id: readingBooks.id,
           name: readingBooks.name,
           publisher: readingBooks.publisher
         }))
@@ -121,13 +121,13 @@ const getAllBookhandler = (request, h) => {
     })
     response.code(200)
     return response
-  }
-  if (finished) {
+  } else if (finished) {
     const response = h.response({
       // optional finished
       status: 'success',
       data: {
         books: booksData.filter((finishedBooks) => Number(finishedBooks.finished) === Number(finished)).map((finishedBooks) => ({
+          id: finishedBooks.id,
           name: finishedBooks.name,
           publisher: finishedBooks.publisher
         }))
@@ -179,7 +179,7 @@ const updateBookByIdHandler = (request, h) => {
   if (readPage === pageCount) { finished = true } else { finished = false }
   const updatedAt = new Date().toISOString()
 
-  if (name === undefined) {
+  if (!name) {
     const response = h.response({
       status: 'fail',
       message: 'Gagal memperbarui buku. Mohon isi nama buku'
