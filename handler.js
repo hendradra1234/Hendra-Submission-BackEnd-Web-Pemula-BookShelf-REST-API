@@ -73,9 +73,9 @@ const addBookHandler = (request, h) => {
 }
 // get all data
 const getAllBookhandler = (request, h) => {
-  const { id, name } = request.query
+  const { name, reading, finished } = request.query
 
-  if (id !== null && name !== null) {
+  if (name !== null && reading !== null && finished !== null) {
     const response = h.response({
       status: 'success',
       data: {
@@ -83,35 +83,54 @@ const getAllBookhandler = (request, h) => {
           id: dataBooks.id,
           name: dataBooks.name,
           publisher: dataBooks.publisher
-        })),
-        // optional name
-        name: booksData.filter((dataBooks) => dataBooks.name).map((dataBooks) => ({
-          id: dataBooks.id,
-          name: dataBooks.name,
-          publisher: dataBooks.publisher
-        })),
-        // optional reading
-        reading: booksData.filter((dataBooks) => dataBooks.reading === true).map((dataBooks) => ({
-          id: dataBooks.id,
-          name: dataBooks.name,
-          publisher: dataBooks.publisher
-        })),
-        // optional finished
-        finished: booksData.filter((dataBooks) => dataBooks.finished === true).map((dataBooks) => ({
-          id: dataBooks.id,
-          name: dataBooks.name,
-          publisher: dataBooks.publisher
         }))
-
       }
     })
     response.code(200)
     return response
-  } else {
+  }
+
+  if (name) {
+    // filter query name
     const response = h.response({
       status: 'success',
       data: {
-        books: []
+        books: booksData.filter((nameBook) => {
+          const bookRegex = new RegExp(name, 'gi')
+          return bookRegex.test(nameBook.name)
+        }).map((nameBook) => ({
+
+          name: nameBook.name,
+          publisher: nameBook.publisher
+        }))
+      }
+    })
+    response.code(200)
+    return response
+  }
+  if (reading) {
+    const response = h.response({
+      status: 'success',
+      data: {
+        books: booksData.filter((readingBooks) => Number(readingBooks.reading) === Number(reading)).map((readingBooks) => ({
+
+          name: readingBooks.name,
+          publisher: readingBooks.publisher
+        }))
+      }
+    })
+    response.code(200)
+    return response
+  }
+  if (finished) {
+    const response = h.response({
+      // optional finished
+      status: 'success',
+      data: {
+        books: booksData.filter((finishedBooks) => Number(finishedBooks.finished) === Number(finished)).map((finishedBooks) => ({
+          name: finishedBooks.name,
+          publisher: finishedBooks.publisher
+        }))
       }
     })
     response.code(200)
